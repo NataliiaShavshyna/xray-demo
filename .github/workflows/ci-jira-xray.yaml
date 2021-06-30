@@ -23,4 +23,7 @@ jobs:
           JIRA_SERVER_URL: ${{ secrets.jira_server_url }}
           JIRA_USERNAME: ${{ secrets.jira_username }}
           JIRA_PASSWORD: ${{ secrets.jira_password }}
-        run: 'curl -H "Content-Type: multipart/form-data" -u $JIRA_USERNAME:$JIRA_PASSWORD -F "file=@target/surefire-reports/TEST-com.company.DemoTest" "$JIRA_SERVER_URL/rest/raven/1.0/import/execution/junit?projectKey=DEMO"'
+        run: |
+          token=$(curl -H "Content-Type: application/json" -X POST --data '{ "client_id": "$JIRA_USERNAME","client_secret": "$JIRA_PASSWORD" }' https://xray.cloud.xpand-it.com/api/v1/authenticate|tr -d '"')
+          curl -H "Content-Type: text/xml" -X POST -H "Authorization: Bearer $token"  --data @"target/surefire-reports/TEST-com.company.DemoTest" https://xray.cloud.xpand-it.com/api/v2/import/execution/junit?projectKey=DEMO             
+        
