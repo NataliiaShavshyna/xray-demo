@@ -1,4 +1,4 @@
-name: CI (Jira on-premises example)
+name: CI (Jira on-premises)
 on: [push]
 jobs:
   build:
