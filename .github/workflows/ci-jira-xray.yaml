@@ -19,11 +19,7 @@ jobs:
       - name: Build with Maven
         run: mvn clean compile test --file pom.xml
       - name: Submit results to Xray
-        env:
-          JIRA_USERNAME: ${{ secrets.jira_username }}
-          JIRA_PASSWORD: ${{ secrets.jira_password }}
         run: |
           token=$(curl -H "Content-Type: application/json" -X POST --data '{ "client_id": "${{ secrets.jira_username }}","client_secret": "${{ secrets.jira_password }}" }' https://xray.cloud.xpand-it.com/api/v1/authenticate|tr -d '"')
-          echo $token
           curl -H "Content-Type: applicaion/xml" -X POST -H "Authorization: Bearer $token" --data @"target/surefire-reports/TEST-com.company.DemoTest.xml" https://xray.cloud.xpand-it.com/api/v2/import/execution/junit?projectKey=DEMO             
         
